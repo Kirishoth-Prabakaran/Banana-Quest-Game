@@ -1,16 +1,30 @@
-# React + Vite
+# Banana Quest
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Banana Quest is a child-friendly quiz game. The first screen is an explorer
+registration page built with React and Vite. Accounts use Supabase Auth; the
+player's nickname is stored in a minimal profile row.
 
-Currently, two official plugins are available:
+## Database setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Run [`../database/schema.sql`](../database/schema.sql) in the Supabase SQL
+Editor from top to bottom. It creates the profile and registration tables,
+assigns sequential `Player001`-style IDs when accounts are created, backfills
+existing accounts, and configures row-level security in order. Passwords stay
+in Supabase Auth and are never written to either game table.
 
-## React Compiler
+In Supabase Auth settings, enable email confirmations so new accounts verify
+their email address before signing in.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Run locally
 
-## Expanding the Oxlint configuration
+1. Copy `backend/.env.example` to `backend/.env` and fill in the Supabase URL
+   and publishable key from your Supabase project.
+2. Copy `frontend/.env.example` to `frontend/.env` if the API is not running at
+   `http://localhost:3000`.
+3. In `backend`, run `npm install`, then `npm run dev`.
+4. In `frontend`, run `npm install`, then `npm run dev`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+The backend exposes `POST /api/auth/register`, `POST /api/auth/login`, and
+`GET /api/health`. Login returns a Supabase session that the frontend keeps in
+the current browser tab's session storage. Never put a Supabase secret key in
+frontend code or commit real `.env` files.
